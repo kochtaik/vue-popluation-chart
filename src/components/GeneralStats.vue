@@ -28,7 +28,6 @@ export default {
   },
   computed: {
     handledData() {
-      console.log(this.localitiesDatasets)
       return this.localitiesDatasets.map(dataset => {
           return Object.entries(dataset).reduce((acc, [key, value]) => {
           // ignoring dates

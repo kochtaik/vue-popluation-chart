@@ -55,6 +55,7 @@ export default {
       } else {
         latestData = data.timeline[0]; // попытаться вынести в отедльную ф-ю
         latestData.name = this.choosenCountry.name; // попытаться вынести в отедльную ф-ю
+        latestData.code = this.choosenCountry.code;
         this.constantCountryTimeline = data.timeline;
         this.drawChart()
       }
@@ -66,7 +67,6 @@ export default {
         this.localitiesDatasets.pop();
       }
       this.localitiesDatasets.push(dataset);
-      console.log(this.localitiesDatasets);
     },
 
     agregateData(param) {

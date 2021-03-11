@@ -1,6 +1,12 @@
 <template>
   <div class="locality">
-    <div class="locality__name">{{ localityStats.name }}</div>
+    <div class="locality__name">
+      <img
+        :src="linkToFlagIcon"
+        :alt="alternativeCaption"
+      />
+      {{ localityStats.name }}
+    </div>
     <div class="locality__total-cases cell">
       <span class="cell__title">All cases</span>
       <span class="cell__number-value">{{ localityStats.confirmed || 'N/A' }}</span>
@@ -27,7 +33,21 @@ export default {
       type: Object,
       default: null,
     }
-  }
+  },
+  computed: {
+    linkToFlagIcon() {
+      if (!this.localityStats.code) {
+        return 'https://img.icons8.com/fluent-systems-regular/32/4a90e2/globe--v1.png';
+      }
+      const localityCode = this.localityStats.code.toLowerCase();
+      return `https://www.countryflags.io/${localityCode}/flat/32.png`;
+    },
+    alternativeCaption() {
+      if (!this.localityStats.name === 'Global') {
+        return 'An icon of globe';
+      } return `A flag of ${this.localityStats.name}`;
+    }
+  },
 }
 </script>
 
@@ -41,6 +61,14 @@ export default {
 .locality__name {
   grid-area: 1 / 1 / 2 / 4;
   padding: 0.3em;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  font-size: 1.2em;
+}
+
+.locality__name > img {
+  margin-right: 0.3em;
 }
 
 .cell {
