@@ -84,7 +84,7 @@ export default {
 
 <style>
 html, select, input {
-  font-size: 20px;
+  font-size: 1em;
   font-family: 'Roboto', sans-serif;
   font-weight: 300;
 }
@@ -95,5 +95,31 @@ html, select, input {
   align-items: flex-start;
   justify-content: space-around;
   flex-wrap: wrap;
+}
+
+@media (min-width: 1550px) and (max-width: 1920px) {
+  html {
+    font-size: 2.2em;
+  }
+}
+@media (min-width: 1280px) and (max-width: 1550px) {
+  html {
+    font-size: 1.5em;
+  }
+}
+
+@media (min-width: 600px) and (max-width: 960px) {
+  html {
+    font-size: 1.5em;
+  }
+  .stats-container {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+@media (min-width: 320px) and (max-width: 600px) {
+  html {
+    font-size: 0.9em;
+  }
 }
 </style>

@@ -171,8 +171,25 @@ export default {
 
 <style scoped>
   .chart-container {
-    width: 48%;
+    width: 45%;
     height: 45%;
     position: relative;
+  }
+
+  @media (min-width: 1550px) and (max-width: 1920px) {
+    .chart-container {
+      width: 58%;
+    }
+  }
+
+  @media (min-width: 600px) and (max-width: 960px) {
+    .chart-container {
+      width: 70%;
+    }
+  }
+  @media (min-width: 320px) and (max-width: 600px) {
+    .chart-container {
+      width: 100%;
+    }
   }
 </style>

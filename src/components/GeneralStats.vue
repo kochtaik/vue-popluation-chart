@@ -48,15 +48,23 @@ export default {
 
 <style scoped>
   section {
-    width: auto;
+    width: 40%;
     height: 50%;
     border: 1px solid #cecece;
     border-radius: 7px;
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+    margin: 0.5em;
   }
 
   header {
     padding: 1em;
     font-weight: 500;
     border-bottom: 1px solid #cecece;
+  }
+
+  @media (max-width: 960px) {
+    section {
+      width: 80%;
+    }
   }
 </style>
