@@ -1,5 +1,8 @@
 <template>
   <section class="chart-container">
+    <h1
+      v-if="isEmptyTimeline"
+    >Oops! There's no data for choosen country:(</h1>
     <canvas
       id="covidChart"
       width="400"
@@ -28,51 +31,84 @@ export default {
       localitiesDatasets: [],
       chartInstance: null,
       isChartDrawn: false,
+      isEmptyTimeline: false,
     };
   },
 
   props: {
     choosenCountry: {
       type: Object,
+      required: false,
       default: null,
     },
     timespan: {
       type: Number,
+      required: true,
       default: Infinity,
     }
   },
+
+  emits: ['on-error'],
+
   methods: {
     async prepareData(countryCode = '') {
-      const localityData = (countryCode === '') ? await fetchData('', '/timeline')
-        : await fetchData(countryCode);
+      try {
+        const localityData = (countryCode === '') ? await fetchData('', '/timeline')
+          : await fetchData(countryCode);
 
-      const { data } = localityData;
-      let latestData;
+        const { data } = localityData;
+        if (!this.isValidTimeline(data.timeline)) return;
+        let latestData;
 
-      if (!data.name) {
-        latestData = data[0]; // попытаться вынести в отедльную ф-ю
-        latestData.name = 'Global'; // попытаться вынести в отедльную ф-ю
-      } else {
-        latestData = data.timeline[0]; // попытаться вынести в отедльную ф-ю
-        latestData.name = this.choosenCountry.name; // попытаться вынести в отедльную ф-ю
-        latestData.code = this.choosenCountry.code;
-        this.constantCountryTimeline = data.timeline;
-        this.drawChart()
+        // in case of global timeline
+        if (!data.name) {
+          latestData = data[0];
+          this.configureLatestData(latestData, 'Global');
+        } else {
+          latestData = data.timeline[0];
+          const { name, code } = this.choosenCountry;
+          this.configureLatestData(latestData, name, code);
+          this.constantCountryTimeline = data.timeline;
+          this.drawChart();
+        }
+        this.renewLocalitiesDatasets(latestData);
+      } catch (e) {
+        console.error(e);
+        this.$emit('on-error');
       }
-      this.renewLocalitiesDatasets(latestData);
+    },
+
+    configureLatestData(data, name, countryCode) {
+      if (countryCode) {
+        data.code = countryCode
+      }
+      data.name = name;
+      return data;
+    },
+
+    isValidTimeline(timeline) {
+      this.isEmptyTimeline = false;
+      if (timeline?.length === 0) {
+        this.isEmptyTimeline = true;
+        this.isChartDrawn = false;
+        this.chartInstance.destroy();
+        return false;
+      }
+      return true;
     },
 
     renewLocalitiesDatasets(dataset) {
-      if (this.localitiesDatasets.length === 2) {
+      const allowableDatasetsLength = 2;
+      if (this.localitiesDatasets.length === allowableDatasetsLength) {
         this.localitiesDatasets.pop();
       }
       this.localitiesDatasets.push(dataset);
     },
 
-    agregateData(param) {
+    selectDataByKey(key) {
       return this.currentCountryTimeline.reduceRight((dataset, item) => {
-        let handledValue = item[param];
-        if (param === 'date') {
+        let handledValue = item[key];
+        if (key === 'date') {
           const options = { year: 'numeric', month: 'short', day: 'numeric'};
           handledValue = new Date(handledValue).toLocaleString('us-US', options);
         }
@@ -82,9 +118,9 @@ export default {
     },
 
     drawChart() {
-      const dates = this.agregateData('date');
-      const newConfirmedCases = this.agregateData('new_confirmed');
-      const newDeaths = this.agregateData('new_deaths');
+      const dates = this.selectDataByKey('date');
+      const newConfirmedCases = this.selectDataByKey('new_confirmed');
+      const newDeaths = this.selectDataByKey('new_deaths');
       const ctx = document.getElementById('covidChart');
 
       this.isChartDrawn = false;
@@ -170,26 +206,5 @@ export default {
 </script>
 
 <style scoped>
-  .chart-container {
-    width: 45%;
-    height: 45%;
-    position: relative;
-  }
-
-  @media (min-width: 1550px) and (max-width: 1920px) {
-    .chart-container {
-      width: 58%;
-    }
-  }
-
-  @media (min-width: 600px) and (max-width: 960px) {
-    .chart-container {
-      width: 70%;
-    }
-  }
-  @media (min-width: 320px) and (max-width: 600px) {
-    .chart-container {
-      width: 100%;
-    }
-  }
+  @import url('../assets/styles/CovidChartStyles.css');
 </style>

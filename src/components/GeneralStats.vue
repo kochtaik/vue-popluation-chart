@@ -2,7 +2,7 @@
   <section>
     <header>General statistics</header>
     <base-locality
-      v-for="(localityDataset, idx) in handledData"
+      v-for="(localityDataset, idx) in formattedData"
       :key="idx"
       :localityStats="localityDataset"
     ></base-locality>
@@ -23,22 +23,22 @@ export default {
   props: {
     localitiesDatasets: {
       type: Object,
+      required: true,
       default: null,
     }
   },
   computed: {
-    handledData() {
+    // Prepares data before outputing
+    // by transforming numbers into human-readable format.
+    formattedData() {
       return this.localitiesDatasets.map(dataset => {
-          return Object.entries(dataset).reduce((acc, [key, value]) => {
-          // ignoring dates
-          const dateValidation = /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/gm;
-          if (dateValidation.test(value)) return acc;
+          return Object.entries(dataset).reduce((formattedObj, [key, value]) => {
     
-          acc[key] = value.toLocaleString();
+          formattedObj[key] = value.toLocaleString();
           if (key.startsWith('new')) {
-            acc[key] = `+${acc[key]}`;
+            formattedObj[key] = `+${formattedObj[key]}`;
           }
-          return acc;
+          return formattedObj;
         }, {});
       });
     }

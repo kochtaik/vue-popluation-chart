@@ -5,7 +5,8 @@
         <input
           class="country-input"
           v-model="searchStringValue"
-          @keypress.enter="selectCountry"
+          @keydown.enter="selectCountry"
+          @keydown.esc="closeSuggestionsList"
           type="text"
           placeholder="Enter a country name..."
           />
@@ -78,7 +79,12 @@ export default {
     'country-select',
     'change-interval',
   ],
-  props: ['suggestions'],
+  props: {
+    suggestions: {
+      type: Object,
+      default: null,
+    }
+  },
   data() {
     return {
       interval: 'Infinity',
@@ -89,7 +95,11 @@ export default {
     selectCountry(option) {
       const selectedCountry = this.suggestions.find(country => country.name === option.target.textContent)
         || this.suggestions[0];
+      if (!selectedCountry) return;
       this.$emit('country-select', selectedCountry);
+      this.closeSuggestionsList();
+    },
+    closeSuggestionsList() {
       this.searchStringValue = '';
     }
   },
@@ -100,117 +110,13 @@ export default {
     interval() {
       this.$emit('change-interval', this.interval);
     },
+  },
+  mounted() {
+    window.addEventListener('click', this.closeSuggestionsList);
   }
 }
 </script>
 
 <style scoped>
-  nav {
-    background: #00adb5;
-    height: 15vh;
-    display: flex;
-    align-items: center;
-    margin-bottom: 1em;
-  }
-
-  nav div {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-  }
-
-  select, .country-input {
-    margin: 0 0.5em;
-  }
-
-  select {
-    display: none;
-  }
-
-  .country-input {
-    background: inherit;
-    border: 0;
-    outline: 0;
-    color: #eeeeee;
-  }
-
-  .country-input::placeholder {
-    color: #eeeeee;
-  }
-
-  .search-area {
-    position: relative;
-  }
-
-  ul {
-    width: 92%;
-    padding: 0;
-    margin: 0 0.5em;
-    list-style: none;
-    position: absolute;
-    top: 100%;
-    z-index: 1000;
-    background: rgb(255, 255, 255);
-    box-shadow:
-    0 2.8px 2.2px rgba(0, 0, 0, 0.034),
-    0 6.7px 5.3px rgba(0, 0, 0, 0.048),
-    0 12.5px 10px rgba(0, 0, 0, 0.06),
-    0 22.3px 17.9px rgba(0, 0, 0, 0.072),
-    0 41.8px 33.4px rgba(0, 0, 0, 0.086),
-    0 100px 80px rgba(0, 0, 0, 0.12)
-  ;
-  }
-
-  li {
-    margin: 0.5em 0;
-    padding: 0 0.5em;
-    cursor: pointer;
-  }
-
-  li:hover {
-    background: #efefef;
-  }
-
-  form {
-    display: flex;
-    align-items: center;
-  }
-
-  .radio {
-    margin: 0.5rem;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .radio input[type="radio"] {
-    opacity: 0;
-    position: absolute;
-  }
-
-  .radio label {
-    color: #eeeeee;
-    cursor: pointer;
-    padding: 0.1em;
-    border-radius: 5px;
-    transition: all 0.25s;
-  }
-
-  .radio input[type="radio"]:checked + label {
-   background-color: #222831;
-  }
-
-  @media (max-width: 960px) {
-    section {
-      width: 80%;
-    }
-
-    select {
-      display: block;
-      font-size: 1.2em;
-    }
-
-    form {
-      display: none;
-    }
-  }
+  @import url('../assets/styles/ConfigBarStyle.css');
 </style>

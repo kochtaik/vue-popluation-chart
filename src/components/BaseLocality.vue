@@ -31,11 +31,13 @@ export default {
   props: {
     localityStats: {
       type: Object,
+      required: true,
       default: null,
     }
   },
   computed: {
     linkToFlagIcon() {
+      // if localityStats contains global stats
       if (!this.localityStats.code) {
         return 'https://img.icons8.com/fluent-systems-regular/32/4a90e2/globe--v1.png';
       }
@@ -43,7 +45,7 @@ export default {
       return `https://www.countryflags.io/${localityCode}/flat/32.png`;
     },
     alternativeCaption() {
-      if (!this.localityStats.name === 'Global') {
+      if (this.localityStats.name === 'Global') {
         return 'An icon of globe';
       } return `A flag of ${this.localityStats.name}`;
     }
@@ -52,47 +54,5 @@ export default {
 </script>
 
 <style scoped>
-.locality {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  padding: 0.5em;
-}
-
-.locality__name {
-  grid-area: 1 / 1 / 2 / 4;
-  padding: 0.3em;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-start;
-  font-size: 1.2em;
-}
-
-.locality__name > img {
-  margin-right: 0.3em;
-}
-
-.cell {
-  padding: 0.3em;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.cell__title {
-  font-weight: 400;
-}
-
-.cell__increase {
-  color: #70757a;
-  font-size: 0.8em;
-}
-
-.cell > span {
-  padding: 0.1em;
-}
-
-.locality__total-recovered {
-  border-left: 1px solid #cecece;
-  border-right: 1px solid #cecece;
-}
+  @import url('../assets/styles/BaseLocalityStyles.css');
 </style>

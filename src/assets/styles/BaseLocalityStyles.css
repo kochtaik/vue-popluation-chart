@@ -1,0 +1,43 @@
+.locality {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 0.5em;
+}
+
+.locality__name {
+  grid-area: 1 / 1 / 2 / 4;
+  padding: 0.3em;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  font-size: 1.2em;
+}
+
+.locality__name > img {
+  margin-right: 0.3em;
+}
+
+.cell {
+  padding: 0.3em;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.cell__title {
+  font-weight: 400;
+}
+
+.cell__increase {
+  color: #70757a;
+  font-size: 0.8em;
+}
+
+.cell > span {
+  padding: 0.1em;
+}
+
+.locality__total-recovered {
+  border-left: 1px solid #cecece;
+  border-right: 1px solid #cecece;
+}
