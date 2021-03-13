@@ -11,11 +11,15 @@
       :timespan="timespan"
     ></covid-chart>
   </div>
+  <div class="overlay" v-if="showSpinner">
+    <base-spinner></base-spinner>
+  </div>
 </template>
 
 <script>
 import configBar from './components/configBar.vue';
 import CovidChart from './components/CovidChart.vue';
+import BaseSpinner from './components/BaseSpinner.vue';
 import { fetchData } from './api';
 
 export default {
@@ -24,6 +28,7 @@ export default {
   components: {
     configBar,
     CovidChart,
+    BaseSpinner
   },
 
   data() {
@@ -33,6 +38,7 @@ export default {
       countryTimeline: [],
       choosenCountry: null,
       timespan: Infinity,
+      loaded: false,
     };
   },
 
@@ -76,8 +82,13 @@ export default {
 
   },
 
+  beforeCreate() {
+    this.showSpinner = true;
+  },
+
   mounted() {
     this.formCountriesList();
+    this.showSpinner = false;
   },
 }
 </script>
@@ -95,6 +106,19 @@ html, select, input {
   align-items: flex-start;
   justify-content: space-around;
   flex-wrap: wrap;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.363);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @media (min-width: 1550px) and (max-width: 1920px) {
